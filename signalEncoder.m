@@ -1,5 +1,5 @@
 clear all;
-close all;
+##close all;
 clc;
 
 %--------------------------------------%
@@ -10,8 +10,8 @@ clc;
 disp('GENERATED SIGNAL');
 
 %Frequencies of signal states: 1 (High), -1 (Low)
-lowStateFreq = 18000;
-highStateFreq = 18500;
+lowStateFreq = 300;
+highStateFreq = 500;
 
 %Length of one pulse (and evt. length of zero between pulses)
 % In seconds
@@ -19,7 +19,7 @@ tOneSig = 0.2
 tBreak = tOneSig;
 
 %Sample rate of soundfile
-fs = 48000
+fs = 44100
 
 
 
@@ -27,7 +27,7 @@ fs = 48000
 % Signal conversion form hex to freq   %
 %--------------------------------------%
 
-signalHex = "4D414349454B"
+signalHex = "A"
 signalBin =  hex2bin(signalHex);
 signalFreq = bin2freq(signalBin,lowStateFreq,highStateFreq);
 
