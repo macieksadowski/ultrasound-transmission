@@ -6,7 +6,8 @@ clc;
 %             Record import            %
 %--------------------------------------%
 
-[recordedAudio,recAudFs] = audioread('andr1try.wav');
+[recordedAudio,recAudFs] = audioread('recV2.wav');
+
 
 %--------------------------------------%
 %      Signal decoding parameters      %
@@ -14,11 +15,11 @@ clc;
 
 frag_length = 0.08;
 #TODO Threshold to db scale!
-threshold = 2;
+threshold = 3;
 
 %Frequencies of signal states: 1 (High), -1 (Low)
-lowStateFreq = 21000;
-highStateFreq = 21500;
+lowStateFreq = 20000;
+highStateFreq = 21000;
 
 disp('RECORDED SIGNAL');
 disp(['Sampling frequency ',num2str(recAudFs),' Hz']);
@@ -61,6 +62,8 @@ disp(['Decoded Data: ',resHex]);
 
 figure
 stem(t_fmaxV,fmaxV);
+xlabel('Time [s]');
+ylabel('Frequency [Hz]');
 
 
 

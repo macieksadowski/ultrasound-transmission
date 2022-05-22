@@ -3,6 +3,7 @@ function [t_fmaxV,fmaxV] = segFft(frag_length,signal,fs,threshold)
 t_fmaxV = [];
 fmaxV = [];
 fV = [];
+high_pass_filter_freq = 18000;
 
 step = floor(frag_length * fs);
 for i = 1:step:length(signal) * fs;
@@ -22,16 +23,17 @@ for i = 1:step:length(signal) * fs;
   f = (0:Nfft/2-1)*fs/Nfft;
   X = abs(fft(frag,Nfft));
   X = X(1:(Nfft/2));
+  X = X .* (f > high_pass_filter_freq)';
   
   [Amax,fmax] = max(X);
-  if Amax < threshold
-    fmaxV = [fmaxV 0];
-  else
+  %if Amax < threshold
+   % fmaxV = [fmaxV 0];
+  %else
     fmaxV = [fmaxV f(fmax)];
-  endif
+  %endif
   fV = [fV f(fmax)];
 endfor
 
-%stem(t_fmaxV,fV);
+stem(t_fmaxV,fV);
 
 endfunction

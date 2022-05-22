@@ -10,8 +10,8 @@ clc;
 disp('GENERATED SIGNAL');
 
 %Frequencies of signal states: 1 (High), -1 (Low)
-lowStateFreq = 300;
-highStateFreq = 500;
+lowStateFreq = 20000;
+highStateFreq = 20500;
 
 %Length of one pulse (and evt. length of zero between pulses)
 % In seconds
@@ -27,7 +27,7 @@ fs = 44100
 % Signal conversion form hex to freq   %
 %--------------------------------------%
 
-signalHex = "A"
+signalHex = "A2"
 signalBin =  hex2bin(signalHex);
 signalFreq = bin2freq(signalBin,lowStateFreq,highStateFreq);
 
