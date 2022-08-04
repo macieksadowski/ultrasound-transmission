@@ -1,12 +1,16 @@
-clear all;
-%close all;
-%clc;
+ clear all;
+close all;
+clc;
 
 %--------------------------------------%
 %             Record import            %
 %--------------------------------------%
 
-[recordedAudio,fs] = audioread('16F21000S50T0.05.wav');
+%[recordedAudio,fs] = audioread('testAnd01.wav');
+
+
+fs = 48000;
+recorder = audiorecorder(fs, 8, 1, 1);
 
 
 %--------------------------------------%
@@ -45,9 +49,6 @@ high_pass_filter_freq = min(freq(1,:))-delta_f;
 
 Nfft = fs / delta_f;
 
-step = floor(1 / delta_R * fs);
-nSteps = length(recordedAudio) * fs;
-
 resHex=[];
 sigBin=[];
 
@@ -56,17 +57,19 @@ oldVals = vals;
 
 breakInd = 0;
 figShown = 0;
+elapsedTime = 0;
 
+count = 0; % count how many time the while was executed
 
-%Loop to iterate through all segments
-for i = 1:step:nSteps;
+while elapsedTime < 5
+
+  count ++;
   
-  %Prevent to get out of array range
-  if i+step > length(recordedAudio)
-    break;
-  endif
-
-  frag  = recordedAudio(i:i+step-1);
+  elapsedTime = 1/ delta_R * count;
+  
+  recordblocking(recorder, 1 / delta_R);
+  
+  frag = getaudiodata(recorder);
   
   %Zero padding
   frag = [frag;zeros(Nfft-length(frag),1)];
@@ -150,12 +153,23 @@ for i = 1:step:nSteps;
     
 
   endif
+ 
+  if(length(sigBin > 0)) 
+    resHex = bin2hex(sigBin);
+    disp(['Decoded Data: ',resHex]);
+  endif
   
-endfor
+  
 
-resHex = bin2hex(sigBin);
+endwhile
+disp('--> Deleting Recorder Object')
+stop(recorder);
 
-disp(['Decoded Data: ',resHex]);
+
+
+
+
+
 
 
 

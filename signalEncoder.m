@@ -13,8 +13,8 @@ disp('GENERATED SIGNAL');
 
 %Length of one pulse (and evt. length of zero between pulses)
 % In seconds
-tOneSig = 0.05
-tBreak = 0.05
+tOneSig = 0.3
+tBreak = 0.3
 
 %Sample rate of soundfile
 fs = 48000
@@ -64,6 +64,8 @@ endfor
 t = (0:(length(audioSig)-1))*ts;
 
 fileName = strcat(num2str(noOfChannels),'F',num2str(firstFreq),'S',num2str(freqStep),'T',num2str(tOneSig),'.wav')
+
+%soundsc(audioSig,fs);
 
 audiowrite(fileName,audioSig,fs);
 

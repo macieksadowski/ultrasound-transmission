@@ -1,10 +1,10 @@
 
 %Number of transmission channels      
-noOfChannels = 16;
+noOfChannels = 1;
 
 %Frequencies will be generated from first frequency ascending with given step
-freqStep = 50
-firstFreq = 21000;
+freqStep = 40;
+firstFreq = 440;
 
 
 %Frequencies of signal states: 1 (High), -1 (Low) for each Bit Line:
