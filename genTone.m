@@ -1,6 +1,6 @@
 function sample = genTone(freq,toneLength,breakLength,fadeLength,sampleRate)
   
-  N = (toneLength + 2 * breakLength) * sampleRate;
+  N = ceil((toneLength + 2 * breakLength) * sampleRate);
   Nbreak = breakLength * sampleRate;
   Nsig = N - 2 * Nbreak;
   sample = zeros(1,N);
@@ -18,13 +18,13 @@ function sample = genTone(freq,toneLength,breakLength,fadeLength,sampleRate)
         filterVal = filterStep * iSig;
       elseif i > Nbreak + (1.0 - fadeLength) * Nsig
         filterVal = -1.0 * filterStep * (iSig - Nsig);        
-      endif
+      end
       sample(i) = filterVal * sin(angle);
-      angle += increment;
-      iSig++;
-    endif
+      angle = angle + increment;
+      iSig = iSig + 1;
+      end
     
-  endfor
+      end
   
   
-endfunction
+      end
