@@ -1,6 +1,15 @@
 clear all;
-close all;
-%clc;
+%close all;
+clc;
+
+%---------------------------------------%
+%             PARAMERETRS               %
+%---------------------------------------%
+%Sample rate of soundfile
+fs = 48000;
+%Message to send as HEX data
+signalHex = '67676767'
+
 
 %--------------------------------------%
 %      Constants and definitions       %
@@ -10,65 +19,43 @@ close all;
 setFreqParams;
 
 disp('GENERATED SIGNAL');
-
-%Length of one pulse (and evt. length of zero between pulses)
-% In seconds
-tOneSig = 0.3
-tBreak = 0.3
-
-%Sample rate of soundfile
-fs = 48000
+disp(strcat('Message: ', signalHex));
+disp(strcat('Bandwidth: ',num2str(freq(1,1)),'Hz - ',num2str(freq(noOfChannels,2)),'Hz'));
+disp(strcat('Speed rate: ',num2str(floor(noOfChannels/(tOneSig+tBreak))),'b/s'));
 
 %--------------------------------------%
 % Signal conversion form hex to freq   %
 %--------------------------------------%
 
-signalHex = "4D616369656A205361646F77736B6900"
-
-
-##signalHex = "A0";
-
 signalBin =  hex2bin(signalHex);
+
+pad = mod(2*length(signalBin),noOfChannels);
+if pad ~= 0
+   signalBin = [signalBin zeros(1,noOfChannels - pad/2)]; 
+end
+
+%--------------------------------------%
+%             Hamming code             %
+%--------------------------------------%
+signalBinEncoded = [];
+for i=4:4:length(signalBin)
+    signalBinEncoded = [signalBinEncoded enc_hamming(signalBin(i-3:i))];
+end
 
 %--------------------------------------%
 %         Soundfile generation         %
 %--------------------------------------%
 
-ts= 1/fs;
+audioSig = generateAudioSig(signalBinEncoded, tOneSig, tBreak, fs);
 
-tOneSigV = 0:ts:tOneSig;
-tBreakV = 0:ts:tBreak;
+t = (0:(length(audioSig)-1))*(1/fs);
 
-breakSig = zeros(1,tBreak/ts);
-
-audioSig = [];
-
-bytePos = 1;
-
-for i=1:length(signalBin)/noOfChannels
-  
-  oneTactSig = zeros(1,length(tOneSigV)-1+length(tBreakV)-1);
-  for j=1:noOfChannels
-    if signalBin(bytePos) == 0
-      curFreq = freq(j,1);
-    elseif signalBin(bytePos) == 1
-      curFreq = freq(j,2);
-    endif
-    bytePos++;
-    oneTactSig = oneTactSig .+ (1/noOfChannels * genTone(curFreq, tOneSig, tBreak / 2.0, 0.01, fs));      
-  endfor
-  audioSig = [audioSig oneTactSig];
-  
-endfor
-
-t = (0:(length(audioSig)-1))*ts;
-
-fileName = strcat(num2str(noOfChannels),'F',num2str(firstFreq),'S',num2str(freqStep),'T',num2str(tOneSig),'.wav')
+fileName = strcat(num2str(noOfChannels),'F',num2str(firstFreq),'S',num2str(freqStep),'T',num2str(tOneSig),'.wav');
 
 %soundsc(audioSig,fs);
 
 audiowrite(fileName,audioSig,fs);
-
+disp(strcat('Saved to file: ',fileName));
 
 
   
